@@ -1,3 +1,6 @@
+# Monday Problem
+# Problem 1:
+
 import pandas as pd
 
 # import ML support libraries
@@ -39,17 +42,5 @@ def runKNN(dataset, prediction, ignore):
     
     return knn
 
-def classifyPlayer(targetRow, data, model, prediction, ignore):
-    X = targetRow.drop(columns = [prediction, ignore])
-    
-    # determine the 5 closest neighbors
-    neighbors = model.kneighbors(X, n_neighbors = 5, return_distance = False)
-    
-    # print out the neighbors data
-    for neighbor in neighbors[0]:
-        print(data.iloc[neighbor])
-
-# test your code
 nbaData = loadData("nba_2013_clean.csv")
 knnModel = runKNN(nbaData, "pos", "player")
-classifyPlayer(nbaData.loc[nbaData['player'] == 'LeBron James'], nbaData, knnModel, 'pos', 'player')

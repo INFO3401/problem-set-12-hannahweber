@@ -1,5 +1,0 @@
-import pandas as pd
-
-# import ML support libraries
-from sklearn.cross_validation import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
