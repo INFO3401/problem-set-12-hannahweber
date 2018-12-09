@@ -1,8 +1,10 @@
 import pandas as pd
+import seaborn as sns
 
 # import ML support libraries
 from sklearn.cross_validation import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cluster import KMeans
 
 def loadData(datafile):
     with open(datafile, 'r', encoding = 'latin1') as csvfile:
@@ -48,8 +50,29 @@ def classifyPlayer(targetRow, data, model, prediction, ignore):
     # print out the neighbors data
     for neighbor in neighbors[0]:
         print(data.iloc[neighbor])
+        
+def runKMeans(dataset, ignore):
+    # set up dataset
+    X = dataset.drop(columns = ignore)
+    
+    # run k-means algorithm
+    kmeans = KMeans(n_clusters = 5)
+    
+    # train the model
+    kmeans.fit(X)
+    
+    # add the predictions to the dataframe
+    dataset['cluster'] = pd.Series(kmeans.predict(X), index = dataset.index)
+    
+    # print a scatter plot matrix
+    scatterMatrix = sns.pairplot(dataset.drop(columns = ignore), hue = 'cluster', palette = 'Set2')
+    
+    scatterMatrix.savefig("kmeanClusters.png")
 
+    return kmeans
+    
 # test your code
 nbaData = loadData("nba_2013_clean.csv")
 knnModel = runKNN(nbaData, "pos", "player")
 classifyPlayer(nbaData.loc[nbaData['player'] == 'LeBron James'], nbaData, knnModel, 'pos', 'player')
+kmeansModel = runKMeans(nbaData, ['pos', 'player'])
